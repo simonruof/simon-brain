@@ -1,0 +1,29 @@
+{
+  "commitMessage": "🔄 Brain Sync — {{date}}",
+  "commitDateFormat": "YYYY-MM-DD HH:mm",
+  "autoSaveInterval": 5,
+  "autoPushOnCommit": true,
+  "pullBeforePush": true,
+  "disablePush": false,
+  "syncMethod": "rebase",
+  "customMessageOnAutoCommit": false,
+  "autoCommitMessage": "🔄 Brain Sync — {{date}}",
+  "listChangedFilesInMessageBody": false,
+  "showStatusBar": true,
+  "updateSubmodules": false,
+  "gitPath": "",
+  "lineAuthor": {
+    "show": false
+  },
+  "autoBackupAfterFileChange": true,
+  "autoBackupInterval": 5,
+  "autoPullInterval": 5,
+  "autoPullOnBoot": true,
+  "disablePopups": false,
+  "disablePopupsForNoChanges": true,
+  "showBranchStatusBar": true,
+  "changedFilesInStatusBar": false,
+  "basePath": "",
+  "differentIntervalCommitAndPush": false,
+  "changedFilesInStatusBarTooltip": true
+}

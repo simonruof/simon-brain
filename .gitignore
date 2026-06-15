@@ -1,0 +1,10 @@
+# Obsidian interne Dateien — workspace und cache nicht committen
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.trash/
+
+# System
+.DS_Store
+Thumbs.db
+*.tmp
