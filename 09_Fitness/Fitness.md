@@ -45,8 +45,18 @@ phase: 8-Wochen Fatcut
 - 2× wöchentlich, 7-Tage-Durchschnitte
 - Kalorien-Anpassung wenn Rate ausserhalb 0.7–1.0 kg/Woche Zielbereich
 
+## Athletos App — Implementiert (Juni 2026)
+- **Repo:** `/media/simon/DATA1/Dev/athletos` (Symlink: `~/athletos`)
+- **8-Wochen Fat Cut Programm** in App + Seed (PPL 6×/Woche, Deload W4+W8)
+- **Cardio-Logging:** LISS, HIIT, Stepper, Sandsack, Wanderung (`/cardio`)
+- **Demo-Accounts:** `simon@athletos.app` / `athlete@athletos.app` / `free@athletos.app` — Passwort `demo1234`
+- **Coach-Messaging**, Food-Templates, Makro-Wochenreport, Paywall (FREE vs PRO)
+- **PITT-Force** + Superset-Alternierung im Workout-UI
+
 ## Ausstehende Lieferables
-⚠️ **Kompletter 8-Wochen-Plan (Woche-für-Woche)** — war noch nicht erstellt am Ende der letzten Session!
+- Echte Nutritionix/Fitbit/WHOOP OAuth-Keys für Production
+- iOS Xcode-Projekt + Apple Watch Companion
+- Stripe Live + EAS Production Build
 
 ## Schlüssel-Erkenntnisse
 - Viszerales/Android-Fett ist metabolisch am reaktionsfähigsten — nimmt zuerst ab
