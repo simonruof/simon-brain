@@ -16,6 +16,7 @@ created: 2026-06-15
 - [[07_Trading/Trading|📈 Trading — ICT 2022 Model]]
 - [[08_Karriere/Karriere|💼 Karriere bei Roche]]
 - [[09_Fitness/Fitness|💪 Fitness & Coaching]]
+- [[10_TRW_Business/README|🧠 TRW Business Super-Brain (The Real World Lessons → eigene Inhalte)]]
 
 ## 📋 Übergeordneter Kontext
 

@@ -443,3 +443,26 @@ Letzter Commit: vor 10 Sekunden — 🔄 Brain Sync — 2026-06-29 20:00
 ==================================
 
 📝 Änderungen gefunden — committe...
+[main 7c096bf] 🔄 Brain Sync — 2026-06-30 08:00
+ 2 files changed, 25 insertions(+), 1 deletion(-)
+⬆️  Push zu Remote...
+To github.com:simonruof/simon-brain.git
+   77bd9a2..7c096bf  main -> main
+[0;32m✅ Push abgeschlossen[0m
+
+Letzter Commit: vor 2 Sekunden — 🔄 Brain Sync — 2026-06-30 08:00
+
+
+🧠 Simon Brain Sync — 2026-06-30 20:00
+==================================
+
+⬇️  Pull von Remote...
+ℹ️  Bereits aktuell
+
+📝 Lokale Änderungen:
+ M 00_INDEX.md
+ M CLAUDE.md
+ M sync.log
+?? 10_TRW_Business/
+?? import_trw.sh
+
