@@ -466,3 +466,20 @@ Letzter Commit: vor 2 Sekunden — 🔄 Brain Sync — 2026-06-30 08:00
 ?? 10_TRW_Business/
 ?? import_trw.sh
 
+[main 08dc31a] 🔄 Brain Sync — 2026-06-30 20:00
+ 6 files changed, 189 insertions(+)
+ create mode 100644 10_TRW_Business/README.md
+ create mode 100644 10_TRW_Business/style_guide.md
+ create mode 100755 import_trw.sh
+⬆️  Push zu Remote...
+To github.com:simonruof/simon-brain.git
+   7c096bf..08dc31a  main -> main
+[0;32m✅ Sync abgeschlossen — alles gepusht[0m
+
+Letzter Commit: vor 4 Sekunden — 🔄 Brain Sync — 2026-06-30 20:00
+
+
+🧠 Simon Brain Sync — 2026-07-01 08:00
+==================================
+
+📝 Änderungen gefunden — committe...
