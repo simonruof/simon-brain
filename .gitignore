@@ -8,3 +8,11 @@
 .DS_Store
 Thumbs.db
 *.tmp
+
+# Prototyp-Fabrik (tools/webpage-builder)
+node_modules/
+.env
+tools/webpage-builder/data/
+tools/webpage-builder/out/
+tools/webpage-builder/gui/dist/
+tools/webpage-builder/*.csv

@@ -1,0 +1,15 @@
+# Abgelaufene Vorschauen automatisch entfernen.
+#
+# Auf der Maschine einrichten, auf der die Fabrik laeuft (nicht auf dem VPS):
+#   crontab -e
+#
+# Ohne diesen Eintrag bleiben fremde Firmennamen, Fotos und Bewertungen
+# unbegrenzt online. Das Ablaufdatum steht dann zwar im Footer, waere aber
+# eine Behauptung statt einer Tatsache — und genau das faellt einem im
+# Zweifelsfall auf die Fuesse.
+
+# Taeglich um 04:15 aufraeumen
+15 4 * * * cd /pfad/zu/simon-brain/tools/webpage-builder && /usr/bin/node bin/wb.js cleanup --json --still >> /var/log/wb-cleanup.log 2>&1
+
+# Vorher pruefen, was entfernt wuerde:
+#   node bin/wb.js cleanup --dry-run --json

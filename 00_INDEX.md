@@ -18,6 +18,10 @@ created: 2026-06-15
 - [[09_Fitness/Fitness|💪 Fitness & Coaching]]
 - [[10_TRW_Business/README|🧠 TRW Business Super-Brain (The Real World Lessons → eigene Inhalte)]]
 
+## 🛠️ Werkzeuge
+
+- [[02_AI_Unternehmen/Webpage_Builder|🏭 Prototyp-Fabrik — Webpage Builder für KMU-Akquise]] (Code: `tools/webpage-builder/`)
+
 ## 📋 Übergeordneter Kontext
 
 - [[CLAUDE|🤖 CLAUDE.md — Master Brain für Claude]]

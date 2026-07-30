@@ -1,0 +1,67 @@
+# Handwerk — Sanitaer, Elektro, Maler, Schreiner, Gartenbau, Reinigung
+#
+# Verkaufslogik: Zwei voellig verschiedene Kunden auf derselben Seite. Der eine
+# hat einen Wasserschaden und will in dreissig Sekunden eine Telefonnummer. Der
+# andere plant einen Umbau und will Referenzen sehen. Deshalb steht der Notfall
+# ganz oben und die Referenzen weiter unten — nicht umgekehrt.
+#
+# Deckt sich mit dem Zielsegment des Trades AI Tools: dieselben Betriebe,
+# derselbe Outreach, zwei Produkte.
+
+id: handwerk
+label: Handwerk & Bau
+schema_type: HomeAndConstructionBusiness
+theme: sharp
+
+match:
+  places_types: [plumber, electrician, painter, roofing_contractor, general_contractor,
+                 locksmith, moving_company, storage, carpenter, hvac_contractor]
+  keywords: [sanitaer, sanitär, elektro, elektriker, maler, gipser, schreiner, zimmerei,
+             heizung, lueftung, spengler, dachdecker, gartenbau, landschaftsbau, reinigung,
+             umzug, bodenleger, plattenleger, fenster, kuechenbau, storen, schlosser,
+             installateur, bau, renovation, umbau]
+  gewicht: 1.0
+
+sections:
+  - hero:      { variant: trust-bar, cta: offerte, zeige: [telefon, notfall, einzugsgebiet] }
+  - services:  { layout: grid-3, titel: "Was wir machen" }
+  - process:   { steps: 3, titel: "Vom Anruf zur fertigen Arbeit" }
+  - proof:     { source: google_reviews, min: 2, titel: "Kundenstimmen" }
+  - about:     { titel: "Der Betrieb" }
+  - contact:   { map: true, hours: true, notfall: true, einzugsgebiet: true }
+
+copy_brief:
+  tonalitaet: >
+    Direkt, verlaesslich, ohne Floskeln. Handwerkskunden misstrauen Hochglanz.
+    Was zaehlt: Erreichbarkeit, Termintreue, Preistransparenz, Aufraeumen nach
+    der Arbeit. Das Einzugsgebiet muss klar benannt sein — niemand ruft an,
+    wenn unklar ist, ob der Betrieb ueberhaupt anfaehrt.
+  headline_muster: "{gewerk} in {ort} und Umgebung"
+  beispiel_headline: "Sanitaer in Gersau und Umgebung — auch im Notfall erreichbar"
+  verboten: [Ihr kompetenter Partner, aus einer Hand, Rundum-sorglos, Qualitaet die ueberzeugt,
+             seit Generationen, Meisterbetrieb der Extraklasse, massgeschneidert]
+  leistungen_fallback:
+    - { titel: "Reparaturen", text: "Schnelle Hilfe, wenn etwas nicht mehr funktioniert." }
+    - { titel: "Neuinstallation", text: "Planung und Ausfuehrung bei Neubau und Umbau." }
+    - { titel: "Wartung", text: "Regelmaessige Kontrolle, damit es gar nicht erst kaputtgeht." }
+    - { titel: "Beratung", text: "Wir sagen Ihnen ehrlich, was noetig ist und was nicht." }
+  prozess_fallback:
+    - { titel: "Sie melden sich", text: "Telefon oder Formular — wir melden uns am selben Tag zurueck." }
+    - { titel: "Termin vor Ort", text: "Wir schauen uns an, worum es geht, und nennen Ihnen den Preis." }
+    - { titel: "Ausfuehrung", text: "Zum vereinbarten Termin, sauber und aufgeraeumt." }
+
+cta:
+  primaer: { text: "Offerte anfordern", ziel: kontakt }
+  sekundaer: { text: "Jetzt anrufen", ziel: telefon }
+
+proof_priority: [google_rating, jahre_erfahrung, notfalldienst, einzugsgebiet]
+
+trust_signale:
+  - "Festpreis nach Besichtigung"
+  - "Termine werden eingehalten"
+  - "Sauberer Arbeitsplatz"
+
+images:
+  benoetigt: [arbeit_vor_ort, team, fahrzeug, referenzobjekt]
+  stock_tags: ["swiss craftsman at work", "plumber tools installation", "construction team"]
+  hero_bevorzugt: arbeit_vor_ort
