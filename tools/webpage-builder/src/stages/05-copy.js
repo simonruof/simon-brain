@@ -21,6 +21,7 @@ import { config } from '../core/config.js';
 import { emit } from '../core/events.js';
 import { jsonAnfrage } from '../lib/claude.js';
 import { playbook, sektionen } from '../lib/playbooks.js';
+import { pruefeFakten, zusammenfassung } from '../lib/factcheck.js';
 
 const SYSTEM = `Du schreibst Website-Texte fuer Schweizer Kleinbetriebe.
 
@@ -232,6 +233,10 @@ export default {
 
     if (!config.anthropicKey) {
       profil.copy = ohneApi(profil, pb);
+      // Auch der Rueckfall wird geprueft: Er uebernimmt Absaetze der
+      // Bestandsseite, und dort kann durchaus etwas stehen, das im neuen
+      // Zusammenhang zur unbelegten Behauptung wird.
+      profil.faktencheck = pruefeFakten(profil.copy, profil, pb);
       emit('warn', { lead: profil.slug, text: 'Ohne ANTHROPIC_API_KEY — Texte aus Bestand und Playbook uebernommen' });
       return;
     }
@@ -262,9 +267,23 @@ export default {
     copy._verstoesse = verstoesse;
 
     profil.copy = copy;
+
+    // Faktenpruefung. Ein falsches Gruendungsjahr im Prototyp beendet das
+    // Gespraech endgueltig — deshalb wird jede pruefbare Behauptung gegen
+    // die Quellen abgeglichen, bevor der Lead als versandbereit gilt.
+    profil.faktencheck = pruefeFakten(copy, profil, pb);
+
     emit('info', {
       lead: profil.slug,
       text: `Texte fertig: ${copy.leistungen?.length ?? 0} Leistungen, ${(copy.about ?? '').length} Zeichen Ueber-uns`,
     });
+
+    if (!profil.faktencheck.versandbereit) {
+      emit('warn', {
+        lead: profil.slug,
+        text: `Nicht versandbereit — ${zusammenfassung(profil.faktencheck)}: `
+          + profil.faktencheck.verdaechtig.map((v) => `"${v.behauptung}"`).join(', '),
+      });
+    }
   },
 };

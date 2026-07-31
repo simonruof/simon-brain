@@ -138,8 +138,26 @@ export function zusammenfassung(p) {
     bewertung: p.places?.rating ?? null,
     status: gesamtStatus(p),
     previewUrl: p.deploy?.url ?? null,
+    // Ein Lead mit unbelegten Behauptungen ist nicht versandbereit — egal wie
+    // gut der Prototyp aussieht. Ein falsches Gruendungsjahr im Erstkontakt
+    // laesst sich nicht zurueckholen.
+    versandbereit: versandbereit(p),
+    faktenWarnungen: p.faktencheck?.verdaechtig?.length ?? 0,
+    rang: p.vergleich ? { platz: p.vergleich.platz, von: p.vergleich.von } : null,
     aktualisiert: p.aktualisiert,
   };
+}
+
+/**
+ * Versandbereit heisst: gebaut, nicht fehlgeschlagen, und ohne unbelegte
+ * Behauptungen im Text. Bewusst streng — der Sinn der Faktenpruefung ist,
+ * dass ein zweifelhafter Lead nicht versehentlich mit rausgeht.
+ */
+export function versandbereit(p) {
+  if (gesamtStatus(p) === 'failed') return false;
+  if (!p.render?.outDir) return false;
+  if (p.faktencheck && !p.faktencheck.versandbereit) return false;
+  return true;
 }
 
 export function gesamtStatus(p) {

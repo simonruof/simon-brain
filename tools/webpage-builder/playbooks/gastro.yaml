@@ -54,6 +54,8 @@ trust_signale:
   - "Reservation empfohlen"
 
 images:
+  # Teller und Innenraum verkaufen — die Hausfassade nur im Notfall.
+  streetview: fallback
   benoetigt: [gericht, innenraum, aussenansicht, team]
   stock_tags: ["swiss restaurant interior", "plated food fine dining", "restaurant terrace alps"]
   hero_bevorzugt: gericht

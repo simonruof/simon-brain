@@ -17,6 +17,7 @@ import { emit } from './events.js';
 import discoverStage from '../stages/00-discover.js';
 import { ladePlaybooks } from '../lib/playbooks.js';
 import { reportSchreiben } from '../lib/report.js';
+import { rangBerechnen } from '../lib/vergleich.js';
 import { deployProfil, deployAufraeumen } from '../lib/deploy.js';
 
 export { config, capabilities, alleProfile, profilLaden, zusammenfassung };
@@ -102,7 +103,16 @@ export async function batch(csvPfad, opts = {}) {
     }
   }
 
-  const reportPfad = reportSchreiben(ergebnisse.map((r) => r.profil));
+  // Rang innerhalb der Region und Branche. Kostet nichts — die Leads eines
+  // Laufs sind einander bereits Konkurrenz, alle Werte liegen vor.
+  const profileDesLaufs = ergebnisse.map((r) => r.profil);
+  const rang = rangBerechnen(profileDesLaufs, { regionsweit: Boolean(opts.regionsweit) });
+  for (const p of profileDesLaufs) if (p.vergleich) profilSpeichern(p);
+  if (rang.bewertet) {
+    emit('info', { text: `Konkurrenzvergleich: ${rang.bewertet} Leads in ${rang.gruppen} Gruppe(n) eingeordnet` });
+  }
+
+  const reportPfad = reportSchreiben(profileDesLaufs);
   const zus = ergebnisse.map((r) => zusammenfassung(r.profil));
   return {
     anzahl: zus.length,

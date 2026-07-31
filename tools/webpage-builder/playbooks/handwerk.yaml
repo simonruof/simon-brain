@@ -62,6 +62,8 @@ trust_signale:
   - "Sauberer Arbeitsplatz"
 
 images:
+  # Firmensitz und Fahrzeuge schaffen Vertrauen bei Handwerkskunden.
+  streetview: bevorzugt
   benoetigt: [arbeit_vor_ort, team, fahrzeug, referenzobjekt]
   stock_tags: ["swiss craftsman at work", "plumber tools installation", "construction team"]
   hero_bevorzugt: arbeit_vor_ort

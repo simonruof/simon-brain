@@ -60,6 +60,8 @@ trust_signale:
   - "Preise transparent"
 
 images:
+  # Der Salon von innen wirkt, die Strassenansicht selten.
+  streetview: fallback
   benoetigt: [salon_innen, arbeit_am_kunden, ergebnis, team]
   stock_tags: ["hair salon interior modern", "beauty treatment closeup", "barber shop scandinavian"]
   hero_bevorzugt: salon_innen

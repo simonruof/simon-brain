@@ -46,6 +46,8 @@ proof_priority: [google_rating, jahre_erfahrung]
 trust_signale: []
 
 images:
+  # Bei unbekannter Branche ist die echte Fassade besser als ein Platzhalter.
+  streetview: fallback
   benoetigt: [aussenansicht, innenraum, team]
   stock_tags: ["small business switzerland", "local shop storefront"]
   hero_bevorzugt: aussenansicht

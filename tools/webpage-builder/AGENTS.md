@@ -47,8 +47,8 @@ Stages laufen in dieser Reihenfolge. Jede lässt sich einzeln wiederholen mit `w
 | `places` | Google Places: Bewertungen, Fotos, Öffnungszeiten, Kategorie | Prototyp wirkt generisch |
 | `classify` | Branche bestimmen → Playbook wählen | fällt auf `_default` zurück |
 | `audit` | KI-Sichtbarkeits-Score der Bestandsseite | kein Verkaufsargument |
-| `copy` | Sektionstexte via Claude API, Schweizer Hochdeutsch | Texte werden aus dem Bestand übernommen |
-| `images` | Bilder aufbereiten: Bestand → Places → Stock, WebP | Platzhalter |
+| `copy` | Sektionstexte via Claude API, Schweizer Hochdeutsch, plus Faktenprüfung | Texte werden aus dem Bestand übernommen |
+| `images` | Bilder aufbereiten: Places → Street View → Bestand → Platzhalter, WebP | Platzhalter |
 | `render` | Prototyp bauen: `out/<slug>/index.html` | kein Prototyp |
 | `verify` | Prototyp mit derselben Formel neu bewerten | kein Nachher-Wert |
 | `outreach` | Betreff + Mail + Vorher/Nachher-Bild | kein Entwurf |
@@ -81,9 +81,23 @@ node bin/wb.js stage garage-muster-a1b2c3 render --json
 node bin/wb.js batch leads.csv --events
 ```
 
+## Versandbereitschaft — das musst du prüfen
+
+Ein Lead kann fertig gebaut und trotzdem **nicht versandbereit** sein. `wb list --json` liefert dafür zwei Felder:
+
+```json
+{ "versandbereit": false, "faktenWarnungen": 2 }
+```
+
+`versandbereit: false` heisst: Der generierte Text enthält Behauptungen, die sich nicht in den Quellen belegen lassen — etwa ein Gründungsjahr, eine Mitarbeiterzahl oder eine Zertifizierung, die das Sprachmodell hinzuerfunden hat. Die Einzelheiten stehen unter `faktencheck.verdaechtig` im vollen Profil (`wb get <slug> --json`), jeweils mit der beanstandeten Behauptung, ihrem Satz und einer Begründung.
+
+**Melde solche Leads, statt sie durchzuwinken.** Ein falsches Gründungsjahr im Erstkontakt beendet das Gespräch endgültig. Korrigieren lässt sich das über das Cockpit oder indem du `copy` mit `--force` neu laufen lässt.
+
 ## Datenmodell
 
-Alles zu einem Lead liegt in `data/<slug>/profile.json`. Der `slug` ist der Schlüssel für alle Befehle. Jede Stage schreibt ihren eigenen Abschnitt: `scrape`, `places`, `klassifikation`, `auditVorher`, `copy`, `bilder`, `render`, `auditNachher`, `outreach`, `deploy`. Unter `stages` steht pro Stage, ob sie `ok`, `skipped` oder `failed` war — bei `failed` mit `fehler` und `hinweis`.
+Alles zu einem Lead liegt in `data/<slug>/profile.json`. Der `slug` ist der Schlüssel für alle Befehle. Jede Stage schreibt ihren eigenen Abschnitt: `scrape`, `places`, `klassifikation`, `auditVorher`, `copy`, `faktencheck`, `bilder`, `render`, `auditNachher`, `vergleich`, `outreach`, `deploy`. Unter `stages` steht pro Stage, ob sie `ok`, `skipped` oder `failed` war — bei `failed` mit `fehler` und `hinweis`.
+
+`vergleich` entsteht nur bei einem Batch-Lauf und nur, wenn mindestens vier Leads derselben Branche am selben Ort vorliegen: Rang, Gruppengrösse, Median und Bestwert.
 
 Fertige Prototypen liegen in `out/<slug>/`. Beides ist gitignored.
 

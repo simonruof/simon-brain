@@ -47,10 +47,26 @@ export const missingKey = (envName, wofuer) =>
 export const networkError = (msg, hint = 'Netzwerk oder API pruefen, danach erneut aufrufen — der Cache haelt bereits erledigte Schritte.') =>
   new WbError('NETWORK', msg, hint, EXIT.NETWORK);
 
+/**
+ * Terminal-Steuerzeichen entfernen.
+ *
+ * Playwright faerbt seine Fehlermeldungen ein. Im Terminal sieht das gut aus,
+ * im Cockpit und in JSON-Ausgaben stehen dann rohe Sequenzen wie "[2m"
+ * mitten im Text. Aufgefallen beim Blick auf die Fehleranzeige im Cockpit.
+ */
+function ohneSteuerzeichen(text) {
+  return String(text ?? '')
+    // eslint-disable-next-line no-control-regex
+    .replace(/\[[0-9;]*m/g, '')
+    .replace(/\s*Call log:[\s\S]*$/, '')   // Playwright haengt ein langes Protokoll an
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 /** Wandelt beliebige Fehler in die einheitliche Form. */
 export function normalizeError(err) {
   if (err instanceof WbError) return err;
-  const msg = err?.message ?? String(err);
+  const msg = ohneSteuerzeichen(err?.message ?? String(err));
   if (/ENOTFOUND|ECONNREFUSED|ETIMEDOUT|EAI_AGAIN|fetch failed|socket hang up/i.test(msg)) {
     return networkError(msg);
   }

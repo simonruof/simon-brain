@@ -58,6 +58,8 @@ trust_signale:
   - "Termin meist innert Woche"
 
 images:
+  # Die Werkstatt von aussen sagt mehr als ein Katalogfoto.
+  streetview: bevorzugt
   benoetigt: [werkstatt_aussen, arbeit_am_fahrzeug, team, hebebuehne]
   stock_tags: ["auto repair garage workshop", "mechanic working on car", "car service switzerland"]
   hero_bevorzugt: werkstatt_aussen

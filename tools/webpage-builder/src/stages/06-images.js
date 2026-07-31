@@ -26,6 +26,7 @@ import { emit } from '../core/events.js';
 import { foto as placesFoto } from '../lib/places-api.js';
 import { playbook } from '../lib/playbooks.js';
 import { theme } from '../themes/tokens.js';
+import { holeFassade, rangImPlaybook, MAX_KANTE } from '../lib/streetview.js';
 
 const ZIELE = {
   hero: { breite: 1800, hoehe: 1100, qualitaet: 82 },
@@ -90,6 +91,8 @@ export default {
     const dir = join(config.outDir, profil.slug, 'bilder');
     mkdirSync(dir, { recursive: true });
 
+    const pbFuerBilder = playbook(profil.klassifikation?.playbook);
+
     // Kandidaten sammeln, beste Quelle zuerst
     const kandidaten = [];
 
@@ -113,12 +116,48 @@ export default {
       if (buf) geladen.push({ ...k, buf });
     }
 
+    // Street View — die tatsaechliche Fassade des Betriebs.
+    //
+    // Rangfolge kommt aus dem Playbook, weil sie branchenabhaengig ist: Bei
+    // einer Werkstatt sagt das Gebaeude von aussen mehr als jedes Katalogfoto,
+    // bei einem Restaurant verkauft der Teller und nicht die Hausfassade.
+    const svRang = rangImPlaybook(pbFuerBilder);
+    const brauchtSv = svRang === 'bevorzugt' || (svRang === 'fallback' && geladen.length === 0);
+
+    if (svRang !== 'nie' && brauchtSv && config.placesKey) {
+      const sv = await holeFassade(profil).catch(() => null);
+      if (sv) {
+        const eintrag = {
+          quelle: 'streetview',
+          ref: 'streetview',
+          alt: `${profil.places?.name ?? profil.eingabe.name} — Aussenansicht`,
+          flaeche: 640 * 422,
+          buf: sv.buffer,
+          aufnahmeDatum: sv.aufnahmeDatum,
+        };
+        // 'bevorzugt' setzt die Fassade an die erste Stelle, 'fallback' hinten an
+        if (svRang === 'bevorzugt') geladen.unshift(eintrag); else geladen.push(eintrag);
+        emit('info', {
+          lead: profil.slug,
+          text: `Street-View-Fassade geholt${sv.aufnahmeDatum ? ` (Aufnahme ${sv.aufnahmeDatum})` : ''}`,
+        });
+      }
+    }
+
     emit('info', { lead: profil.slug, text: `${geladen.length} von ${kandidaten.length} Bildkandidaten geladen` });
 
     const name = profil.places?.name || profil.scrape?.name || profil.eingabe.name || 'Betrieb';
     const ergebnis = { hero: null, about: null, galerie: [], quellen: {}, platzhalter: [] };
 
-    /** Ein Bild in Zielgroesse schreiben. Liefert das Objekt fuer den Renderer. */
+    /**
+     * Ein Bild in Zielgroesse schreiben. Liefert das Objekt fuer den Renderer.
+     *
+     * Kleine Quellen werden nicht blind auf Zielgroesse aufgeblasen. Street
+     * View liefert hoechstens 640 Pixel Kantenlaenge, alte Websites oft noch
+     * weniger — auf 1800 hochgerechnet sieht beides matschig aus, und matschig
+     * ist schlimmer als klein. Stattdessen wird das Ziel auf ein vertretbares
+     * Mass gedeckelt und leicht nachgeschaerft.
+     */
     async function schreibe(buf, dateiname, ziel, alt) {
       const rel = `bilder/${dateiname}.webp`;
       const rel2x = `bilder/${dateiname}@2x.webp`;
@@ -128,15 +167,46 @@ export default {
         writeFileSync(join(config.outDir, profil.slug, roh), buf);
         return { datei: roh, alt, breite: ziel.breite, hoehe: ziel.hoehe };
       }
-      await sharp(buf).resize(ziel.breite, ziel.hoehe, { fit: 'cover', position: 'attention' })
-        .webp({ quality: ziel.qualitaet }).toFile(join(config.outDir, profil.slug, rel));
-      await sharp(buf).resize(ziel.breite * 2, ziel.hoehe * 2, { fit: 'cover', position: 'attention', withoutEnlargement: true })
-        .webp({ quality: Math.max(60, ziel.qualitaet - 12) }).toFile(join(config.outDir, profil.slug, rel2x))
+
+      // Hoechstens 1,6-fach vergroessern — darueber wird es sichtbar weich.
+      const MAX_STRECKUNG = 1.6;
+      let breite = ziel.breite;
+      let hoehe = ziel.hoehe;
+      let nachschaerfen = false;
+
+      try {
+        const meta = await sharp(buf).metadata();
+        if (meta.width && meta.width < ziel.breite) {
+          const erlaubt = Math.round(meta.width * MAX_STRECKUNG);
+          if (erlaubt < ziel.breite) {
+            const faktor = erlaubt / ziel.breite;
+            breite = erlaubt;
+            hoehe = Math.round(ziel.hoehe * faktor);
+          }
+          nachschaerfen = true;
+        }
+      } catch { /* Metadaten nicht lesbar — mit den Vorgaben weitermachen */ }
+
+      const verkleinern = (b, h, q) => {
+        let p = sharp(buf).resize(b, h, { fit: 'cover', position: 'attention' });
+        if (nachschaerfen) p = p.sharpen({ sigma: 0.7 });
+        return p.webp({ quality: q });
+      };
+
+      await verkleinern(breite, hoehe, ziel.qualitaet)
+        .toFile(join(config.outDir, profil.slug, rel));
+
+      // Die 2x-Fassung nur, wenn die Quelle sie ohne Streckung hergibt.
+      await sharp(buf)
+        .resize(breite * 2, hoehe * 2, { fit: 'cover', position: 'attention', withoutEnlargement: true })
+        .webp({ quality: Math.max(60, ziel.qualitaet - 12) })
+        .toFile(join(config.outDir, profil.slug, rel2x))
         .catch(() => {});
+
       return {
         datei: rel,
         datei2x: existsSync(join(config.outDir, profil.slug, rel2x)) ? rel2x : null,
-        alt, breite: ziel.breite, hoehe: ziel.hoehe,
+        alt, breite, hoehe,
       };
     }
 

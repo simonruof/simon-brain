@@ -116,6 +116,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .pfeil { color: var(--leise); font-size: .75rem; }
 
+.rang {
+  background: var(--bgAlt); border: 1px solid var(--rand); border-radius: 999px;
+  padding: .18rem .65rem; font-size: .78rem; font-weight: 600; color: var(--leise);
+}
+/* Ein gesperrter Lead muss in der Liste ins Auge springen — sonst geht er
+   im Batch von fuenfzig unter und wird versehentlich verschickt. */
+.sperre {
+  background: var(--schlecht); color: #fff; font-size: .62rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; padding: .15rem .4rem;
+  border-radius: 999px; white-space: nowrap;
+}
+
 /* ── Detail ──────────────────────────────────────────────────────────── */
 .detail__kopf { padding: 1.2rem 1.4rem; border-bottom: 1px solid var(--rand); background: var(--flaeche); }
 .detail__name { font-size: 1.35rem; font-weight: 700; letter-spacing: -.02em; }
@@ -132,8 +144,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .tafel { padding: 1.4rem; }
 
+.umschalter { display: flex; align-items: center; gap: .4rem; margin-bottom: .9rem; }
+.umschalter__hinweis { color: var(--leise); font-size: .8rem; margin-left: .4rem; }
+
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
-@media (max-width: 1200px) { .split { grid-template-columns: 1fr; } }
+/* In der Handyansicht sind beide Seiten 390px breit — schmalere Spalten,
+   damit die Bildschirme nebeneinander passen statt sich zu strecken. */
+.split--mobil { grid-template-columns: repeat(2, minmax(0, 420px)); justify-content: start; }
+.split--mobil .rahmen { height: 700px; }
+@media (max-width: 1200px) { .split, .split--mobil { grid-template-columns: 1fr; } }
 .split figure { margin: 0; }
 .split figcaption {
   font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;

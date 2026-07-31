@@ -53,11 +53,16 @@ export default function LeadDetail({ slug, playbooks, zurueck, nachAenderung }) 
             p.eingabe.url].filter(Boolean).join(' · ')}
         </div>
 
-        <div className="detail__meta" style={{ marginTop: '.6rem', display: 'flex', gap: '.5rem', alignItems: 'center' }}>
+        <div className="detail__meta" style={{ marginTop: '.6rem', display: 'flex', gap: '.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <span className="pille" style={{ background: scoreFarbe(vorher) }}>{vorher ?? '–'}</span>
           <span>→</span>
           <span className="pille" style={{ background: scoreFarbe(nachher) }}>{nachher ?? '–'}</span>
           <span style={{ marginLeft: '.3rem' }}>KI-Sichtbarkeit</span>
+          {p.vergleich && (
+            <span className="rang" title={`Median der Gruppe: ${p.vergleich.median}, bester: ${p.vergleich.bestwert}`}>
+              Platz {p.vergleich.platz} von {p.vergleich.von} in {p.places?.ort || p.eingabe.ort}
+            </span>
+          )}
         </div>
 
         <div className="detail__aktionen">
@@ -91,11 +96,35 @@ export default function LeadDetail({ slug, playbooks, zurueck, nachAenderung }) 
       <div className="tafel">
         {fehler && <div className="fehlerbox">{fehler}</div>}
 
+        {/* Die Faktenprüfung steht bewusst ganz oben und in Rot: Ein falsches
+            Gründungsjahr im Erstkontakt lässt sich nicht zurückholen. */}
+        {p.faktencheck && !p.faktencheck.versandbereit && (
+          <div className="fehlerbox">
+            <strong>Nicht versandbereit — {p.faktencheck.verdaechtig.length} unbelegte Behauptung(en)</strong>
+            <ul style={{ margin: '.5rem 0 .4rem', paddingLeft: '1.1rem' }}>
+              {p.faktencheck.verdaechtig.map((v, i) => (
+                <li key={i} style={{ marginBottom: '.35rem' }}>
+                  „{v.behauptung}" <span style={{ opacity: .7 }}>({v.label})</span>
+                  <br /><span style={{ opacity: .8, fontSize: '.95em' }}>im Satz: „{v.umgebung}"</span>
+                </li>
+              ))}
+            </ul>
+            Diese Angaben stehen nicht in den Quellen. Im Reiter <em>Texte</em> korrigieren und neu bauen.
+          </div>
+        )}
+
         {fehlgeschlagen.length > 0 && (
           <div className="fehlerbox">
             {fehlgeschlagen.map(([id, s]) => (
               <div key={id}><strong>{id}</strong>: {s.fehler}{s.hinweis ? ` → ${s.hinweis}` : ''}</div>
             ))}
+          </div>
+        )}
+
+        {p.bilder?.quellen?.hero === 'streetview' && (
+          <div className="hinweis">
+            Das Hero-Bild ist die Street-View-Fassade des Betriebs — echt und unverwechselbar.
+            Vor dem Versand kurz prüfen, ob die Aufnahme aktuell genug ist.
           </div>
         )}
 
@@ -115,37 +144,59 @@ export default function LeadDetail({ slug, playbooks, zurueck, nachAenderung }) 
   );
 }
 
-/** Der entscheidende Blick: links was ist, rechts was sein koennte. */
+/**
+ * Der entscheidende Blick: links was ist, rechts was sein koennte.
+ *
+ * Standardmässig die Handyansicht. Alte KMU-Seiten sehen dort dramatisch
+ * schlechter aus als auf dem Desktop — Tabellenlayouts laufen seitlich raus,
+ * Schrift wird auf Briefmarkengrösse skaliert, Nummern sind nicht antippbar.
+ * Und dort schaut der Kunde des Kunden hin.
+ */
 function Vergleich({ p, slug, cachePuffer }) {
-  return (
-    <div className="split">
-      <figure>
-        <figcaption>
-          <span>Heute</span>
-          {p.eingabe.url && <a href={p.eingabe.url} target="_blank" rel="noreferrer">Original öffnen</a>}
-        </figcaption>
-        <div className="rahmen rahmen--scroll">
-          {p.scrape
-            ? <img src={`/bild/${slug}/vorher-voll.png`} alt="Bestehende Website"
-                   onError={(e) => { e.target.src = `/bild/${slug}/vorher.png`; }} />
-            : <div className="leer">
-                {p.scrapeHinweis?.text ?? 'Keine erreichbare Website — der beste Ausgangspunkt für ein Gespräch.'}
-              </div>}
-        </div>
-      </figure>
+  const [ansicht, setAnsicht] = useState('mobil');
+  const mobil = ansicht === 'mobil';
 
-      <figure>
-        <figcaption>
-          <span>Entwurf</span>
-          <span>{p.render?.theme} · {p.render?.sektionen?.length} Sektionen</span>
-        </figcaption>
-        <div className="rahmen">
-          {p.render?.outDir
-            ? <iframe key={cachePuffer} src={`/vorschau/${slug}/index.html?v=${cachePuffer}`} title="Prototyp" />
-            : <div className="leer">Noch kein Prototyp gebaut.</div>}
-        </div>
-      </figure>
-    </div>
+  return (
+    <>
+      <div className="umschalter">
+        {[['mobil', 'Handy'], ['desktop', 'Desktop']].map(([id, t]) => (
+          <button key={id} className={`chip ${ansicht === id ? 'chip--an' : ''}`} onClick={() => setAnsicht(id)}>{t}</button>
+        ))}
+        <span className="umschalter__hinweis">
+          {mobil ? 'So sehen es die meisten Besucher' : 'Desktop-Ansicht'}
+        </span>
+      </div>
+
+      <div className={`split ${mobil ? 'split--mobil' : ''}`}>
+        <figure>
+          <figcaption>
+            <span>Heute</span>
+            {p.eingabe.url && <a href={p.eingabe.url} target="_blank" rel="noreferrer">Original öffnen</a>}
+          </figcaption>
+          <div className="rahmen rahmen--scroll">
+            {p.scrape
+              ? <img src={`/bild/${slug}/${mobil ? 'vorher-mobil.png' : 'vorher-voll.png'}`} alt="Bestehende Website"
+                     onError={(e) => { e.target.src = `/bild/${slug}/vorher.png`; }} />
+              : <div className="leer">
+                  {p.scrapeHinweis?.text ?? 'Keine erreichbare Website — der beste Ausgangspunkt für ein Gespräch.'}
+                </div>}
+          </div>
+        </figure>
+
+        <figure>
+          <figcaption>
+            <span>Entwurf</span>
+            <span>{p.render?.theme} · {p.render?.sektionen?.length} Sektionen</span>
+          </figcaption>
+          <div className="rahmen">
+            {p.render?.outDir
+              ? <iframe key={`${cachePuffer}-${ansicht}`} src={`/vorschau/${slug}/index.html?v=${cachePuffer}`}
+                        title="Prototyp" style={mobil ? { width: 390, margin: '0 auto' } : undefined} />
+              : <div className="leer">Noch kein Prototyp gebaut.</div>}
+          </div>
+        </figure>
+      </div>
+    </>
   );
 }
 

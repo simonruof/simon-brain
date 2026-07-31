@@ -70,15 +70,45 @@ npm run cockpit
 | Stage | Was sie tut |
 |---|---|
 | `discover` | Places-Umkreissuche → Lead-Liste, sortiert nach Verkaufswahrscheinlichkeit |
-| `scrape` | Bestandsseite mit Playwright auslesen, Kontaktdaten aus dem Fliesstext ziehen, Screenshot |
+| `scrape` | Bestandsseite mit Playwright auslesen, Kontaktdaten aus dem Fliesstext ziehen, Screenshots (Desktop **und** mobil) |
 | `places` | Google-Profil: Bewertungen, Fotos, Öffnungszeiten, Kategorie |
 | `classify` | Branche bestimmen → Playbook wählen |
 | `audit` | KI-Sichtbarkeits-Score der Bestandsseite |
-| `copy` | Sektionstexte via Claude, Schweizer Hochdeutsch, Playbook-Briefing |
-| `images` | Bildkaskade Places → Altseite → ehrlicher Platzhalter, WebP |
+| `copy` | Sektionstexte via Claude, Schweizer Hochdeutsch, Playbook-Briefing, **Faktenprüfung** |
+| `images` | Bildkaskade Places → **Street View** → Altseite → ehrlicher Platzhalter, WebP |
 | `render` | Prototyp bauen: `out/<slug>/index.html` |
 | `verify` | Prototyp mit **derselben** Formel neu bewerten |
-| `outreach` | Betreff, Mailtext, Vorher/Nachher-Bild |
+| `outreach` | Betreff, Mailtext, Rang-Vergleich, Vorher/Nachher-Bild (mobil) |
+
+Nach einem Batch berechnet `src/lib/vergleich.js` zusätzlich den **Rang jedes Leads innerhalb seiner Region und Branche** — ohne einen einzigen zusätzlichen API-Aufruf, weil die Leads eines Laufs einander bereits Konkurrenz sind.
+
+## Glaubwürdigkeit
+
+Drei Mechanismen, die verhindern, dass ein Prototyp mehr behauptet, als er belegen kann.
+
+### Faktenprüfung (`src/lib/factcheck.js`)
+
+Der Copy-Prompt verbietet erfundene Angaben — verlassen kann man sich darauf nicht. Ein Sprachmodell schreibt „Familienbetrieb seit 1987" nicht aus Boshaftigkeit, sondern weil es in jedem zweiten Werkstatttext steht.
+
+Jede prüfbare Behauptung im generierten Text wird deterministisch gegen die Quellen abgeglichen: Jahreszahlen, Mengenangaben, Preise, Zertifizierungen, Garantiezusagen, Spitzenstellungsbehauptungen. Was nicht belegbar ist, macht den Lead **nicht versandbereit** — sichtbar in Report, Cockpit und im Mail-Entwurf.
+
+Bewusst **keine** automatische Korrektur: Ein Satz, aus dem eine Zahl herausgeschnitten wurde, liest sich meist schlimmer als der Fehler. Und bewusst grosszügig ausgelegt — der teuerste Fehler ist nicht die übersehene Behauptung, sondern der Fehlalarm. Nach dem dritten grundlosen Alarm schaut niemand mehr hin.
+
+### Street View statt Platzhalter (`src/lib/streetview.js`)
+
+Wo kein brauchbares Foto existiert, liefert Street View die **tatsächliche Fassade** des Betriebs. Faktisch korrekt, unverwechselbar — der „das ist mein Laden"-Moment im wörtlichsten Sinn.
+
+Zuerst läuft die kostenlose Metadaten-Abfrage; das Bild wird nur geholt, wenn es an dieser Stelle überhaupt eine Aufnahme gibt. Rangfolge pro Branche über das Playbook (`images.streetview`): bei KFZ und Handwerk `bevorzugt` (das Gebäude sagt mehr als ein Katalogfoto), bei Gastro und Beauty `fallback` (dort verkaufen Teller und Innenraum).
+
+Bekannte Grenze: Die Standard-API liefert maximal 640×640. Für den vollflächigen Bild-Hero reicht das nicht — deshalb dort Places-Fotos zuerst. Kleine Quellen werden höchstens 1,6-fach vergrössert und nachgeschärft, statt matschig hochgerechnet.
+
+### Konkurrenzvergleich (`src/lib/vergleich.js`)
+
+Eine Punktzahl allein lässt sich wegargumentieren. Eine Rangliste nicht:
+
+> Ich habe 12 Werkstätten in Gersau angeschaut. 9 davon erreichen einen besseren Wert als Ihre Seite — der beste liegt bei 71 Punkten.
+
+**Ohne Namensnennung.** Vergleichende Werbung mit Nennung des Mitbewerbers ist in unaufgeforderter Kaltakquise nach UWG angreifbar — und anonym wirkt es ohnehin unangenehmer. Mindestgruppengrösse ist 4; „Sie sind Zweiter von zwei" ist kein Argument. Wer vorne liegt, bekommt gar keinen Vergleichssatz.
 
 Jede Stage ist einzeln wiederholbar (`wb stage <slug> <stage>`), gecacht und fortsetzbar. Ein zweiter Lauf über dieselbe CSV kostet keine API-Gebühren.
 

@@ -46,7 +46,8 @@ export default function App() {
     const alle = zustand?.leads ?? [];
     const gefiltert = alle.filter((l) => {
       if (filter === 'alle') return true;
-      if (filter === 'fertig') return l.scoreNachher != null && l.status !== 'failed';
+      if (filter === 'bereit') return l.versandbereit;
+      if (filter === 'gesperrt') return l.faktenWarnungen > 0;
       if (filter === 'fehler') return l.status === 'failed';
       if (filter === 'online') return Boolean(l.previewUrl);
       return l.branche === filter;
@@ -63,13 +64,16 @@ export default function App() {
   if (!zustand) return <div className="leer">Cockpit wird geladen …</div>;
 
   const f = zustand.faehigkeiten;
+  const gesperrtGesamt = zustand.leads.filter((l) => l.faktenWarnungen > 0).length;
 
   return (
     <div className="app">
       <header className="kopf">
         <span className="kopf__titel">Prototyp-Fabrik</span>
         <span className="kopf__stat">
-          {zustand.leads.length} Leads · {zustand.deploy.online} online
+          {zustand.leads.length} Leads · {zustand.leads.filter((l) => l.versandbereit).length} versandbereit
+          {gesperrtGesamt > 0 && <> · <strong style={{ color: 'var(--schlecht)' }}>{gesperrtGesamt} gesperrt</strong></>}
+          {zustand.deploy.online > 0 && ` · ${zustand.deploy.online} online`}
           {zustand.deploy.abgelaufen > 0 && ` · ${zustand.deploy.abgelaufen} abgelaufen`}
         </span>
         <div className="kopf__rechts">
@@ -88,7 +92,7 @@ export default function App() {
           {fehler && <div className="fehlerbox" style={{ margin: '1rem' }}>{fehler}</div>}
 
           <div className="filter">
-            {[['alle', 'Alle'], ['fertig', 'Fertig'], ['online', 'Online'], ['fehler', 'Fehler']].map(([id, t]) => (
+            {[['alle', 'Alle'], ['bereit', 'Versandbereit'], ['gesperrt', 'Gesperrt'], ['online', 'Online'], ['fehler', 'Fehler']].map(([id, t]) => (
               <button key={id} className={`chip ${filter === id ? 'chip--an' : ''}`} onClick={() => setFilter(id)}>{t}</button>
             ))}
             {branchen.map((b) => (
@@ -109,11 +113,17 @@ export default function App() {
                 <div>
                   <div className="lead__name">{l.name}</div>
                   <div className="lead__meta">
-                    {[l.ort, l.branche, l.bewertung && `${l.bewertung}★`, l.status]
+                    {[l.ort, l.branche, l.bewertung && `${l.bewertung}★`,
+                      l.rang && `Platz ${l.rang.platz}/${l.rang.von}`, l.status]
                       .filter(Boolean).join(' · ')}
                   </div>
                 </div>
                 <div className="lead__scores">
+                  {l.faktenWarnungen > 0 && (
+                    <span className="sperre" title={`${l.faktenWarnungen} unbelegte Behauptung(en) im Text`}>
+                      gesperrt
+                    </span>
+                  )}
                   <span className="pille" style={{ background: scoreFarbe(l.scoreVorher) }}>{l.scoreVorher ?? '–'}</span>
                   <span className="pfeil">→</span>
                   <span className="pille" style={{ background: scoreFarbe(l.scoreNachher) }}>{l.scoreNachher ?? '–'}</span>

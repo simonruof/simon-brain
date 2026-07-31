@@ -31,17 +31,25 @@ export function reportSchreiben(profile) {
     const sprung = (z.scoreNachher ?? 0) - (z.scoreVorher ?? 0);
     return {
       ...z, sprung, profil: p,
-      vorherBild: bildEinbetten(join(config.dataDir, p.slug, 'vorher.png')),
-      nachherBild: bildEinbetten(join(config.dataDir, p.slug, 'nachher.png')),
+      // Mobil-Aufnahmen: Alte KMU-Seiten sehen auf dem Handy dramatisch
+      // schlechter aus, und dort schaut der Kunde des Kunden hin.
+      vorherBild: bildEinbetten(join(config.dataDir, p.slug, 'vorher-mobil.png'))
+        ?? bildEinbetten(join(config.dataDir, p.slug, 'vorher.png')),
+      nachherBild: bildEinbetten(join(config.dataDir, p.slug, 'nachher-mobil.png'))
+        ?? bildEinbetten(join(config.dataDir, p.slug, 'nachher.png')),
       luecken: p.auditVorher?.luecken ?? [],
       fehler: Object.entries(p.stages ?? {})
         .filter(([, s]) => s.status === 'failed')
         .map(([id, s]) => `${id}: ${s.fehler}`),
       platzhalter: (p.bilder?.platzhalter ?? []).length > 0,
+      streetview: p.bilder?.quellen?.hero === 'streetview',
+      fakten: p.faktencheck ?? null,
     };
   }).sort((a, b) => b.sprung - a.sprung);
 
   const fertig = zeilen.filter((z) => z.status !== 'failed' && z.scoreNachher != null);
+  const versandbereit = zeilen.filter((z) => z.versandbereit).length;
+  const gesperrt = zeilen.filter((z) => z.fakten && !z.fakten.versandbereit).length;
   const mittelVorher = fertig.length ? Math.round(fertig.reduce((a, z) => a + (z.scoreVorher ?? 0), 0) / fertig.length) : 0;
   const mittelNachher = fertig.length ? Math.round(fertig.reduce((a, z) => a + (z.scoreNachher ?? 0), 0) / fertig.length) : 0;
 
@@ -83,9 +91,10 @@ export function reportSchreiben(profile) {
   .sprung{font-weight:700;font-size:.85rem;color:var(--gut)}
   .lead__body{display:none;padding:0 1.3rem 1.3rem;border-top:1px solid var(--rand)}
   .lead.auf .lead__body{display:block}
-  .vergleich{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:1.1rem 0}
+  /* Hochformat: die Vorschaubilder sind Handybildschirme, nicht Desktop-Fenster */
+  .vergleich{display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:1rem;margin:1.1rem 0}
   .vergleich figure{margin:0}
-  .vergleich img{width:100%;border-radius:8px;border:1px solid var(--rand);display:block;aspect-ratio:16/10;object-fit:cover;object-position:top}
+  .vergleich img{width:100%;border-radius:8px;border:1px solid var(--rand);display:block;aspect-ratio:9/16;object-fit:cover;object-position:top}
   .vergleich figcaption{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--leise);
                         font-weight:600;margin-bottom:.35rem}
   .luecken{margin:1rem 0 0;padding:0;list-style:none;display:grid;gap:.5rem}
@@ -99,7 +108,11 @@ export function reportSchreiben(profile) {
   .warn{background:color-mix(in srgb,var(--mittel) 14%,transparent);border:1px solid color-mix(in srgb,var(--mittel) 40%,transparent);
         border-radius:8px;padding:.6rem .85rem;font-size:.85rem;margin-top:.9rem}
   .fehler{background:color-mix(in srgb,var(--schlecht) 12%,transparent);border:1px solid color-mix(in srgb,var(--schlecht) 35%,transparent);
-          border-radius:8px;padding:.6rem .85rem;font-size:.85rem;margin-top:.9rem;font-family:ui-monospace,monospace}
+          border-radius:8px;padding:.7rem .9rem;font-size:.85rem;margin-top:.9rem;line-height:1.55}
+  .info{background:color-mix(in srgb,var(--akzent) 10%,transparent);border:1px solid color-mix(in srgb,var(--akzent) 32%,transparent);
+        border-radius:8px;padding:.6rem .85rem;font-size:.85rem;margin-top:.9rem}
+  .sperre{background:var(--schlecht);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.06em;
+          text-transform:uppercase;padding:.22rem .5rem;border-radius:999px}
   .leer{text-align:center;color:var(--leise);padding:4rem 0}
   @media (max-width:720px){ .lead__kopf{grid-template-columns:1fr} .vergleich{grid-template-columns:1fr} }
 </style>
@@ -111,7 +124,8 @@ export function reportSchreiben(profile) {
 
   <div class="kacheln">
     <div class="kachel"><div class="zahl">${zeilen.length}</div><div class="label">Leads gesamt</div></div>
-    <div class="kachel"><div class="zahl">${fertig.length}</div><div class="label">Prototyp fertig</div></div>
+    <div class="kachel"><div class="zahl" style="color:var(--gut)">${versandbereit}</div><div class="label">Versandbereit</div></div>
+    <div class="kachel"><div class="zahl"${gesperrt ? ' style="color:var(--schlecht)"' : ''}>${gesperrt}</div><div class="label">Faktencheck gesperrt</div></div>
     <div class="kachel"><div class="zahl" style="color:var(--schlecht)">${mittelVorher}</div><div class="label">Score vorher (Mittel)</div></div>
     <div class="kachel"><div class="zahl" style="color:var(--gut)">${mittelNachher}</div><div class="label">Score nachher (Mittel)</div></div>
     <div class="kachel"><div class="zahl">${zeilen.filter((z) => z.status === 'failed').length}</div><div class="label">Fehlgeschlagen</div></div>
@@ -145,23 +159,31 @@ function karte(z) {
   <div class="lead__kopf">
     <div>
       <div class="lead__name">${esc(z.name)}</div>
-      <div class="lead__meta">${esc(z.ort || '')}${z.branche ? ` · ${esc(z.branche)}` : ''}${z.bewertung ? ` · ${z.bewertung}★` : ''}${z.url ? ` · ${esc(z.url.replace(/^https?:\/\/(www\.)?/, ''))}` : ' · keine Website'}</div>
+      <div class="lead__meta">${esc(z.ort || '')}${z.branche ? ` · ${esc(z.branche)}` : ''}${z.bewertung ? ` · ${z.bewertung}★` : ''}${z.rang ? ` · Platz ${z.rang.platz} von ${z.rang.von}` : ''}${z.url ? ` · ${esc(z.url.replace(/^https?:\/\/(www\.)?/, ''))}` : ' · keine Website'}</div>
     </div>
     <div class="scores">
+      ${z.versandbereit === false ? '<span class="sperre" title="Nicht versandbereit">gesperrt</span>' : ''}
       ${p(z.scoreVorher)}<span class="pfeil">→</span>${p(z.scoreNachher)}
       ${z.sprung > 0 ? `<span class="sprung">+${z.sprung}</span>` : ''}
     </div>
   </div>
   <div class="lead__body">
+    ${z.fakten && !z.fakten.versandbereit ? `<div class="fehler">
+      <strong>Nicht versandbereit — ${z.fakten.verdaechtig.length} unbelegte Behauptung(en) im Text:</strong><br>
+      ${z.fakten.verdaechtig.map((v) => `„${esc(v.behauptung)}" (${esc(v.label)}) — im Satz: „${esc(v.umgebung)}"`).join('<br>')}
+      <br><br>Diese Angaben stehen nicht in den Quellen. Vor dem Versand pruefen: Eine falsche Zahl ueber den eigenen Betrieb beendet das Gespraech endgueltig.
+    </div>` : ''}
+
     ${z.vorherBild || z.nachherBild ? `<div class="vergleich">
-      <figure><figcaption>Heute</figcaption>${z.vorherBild ? `<img src="${z.vorherBild}" alt="">` : '<div style="aspect-ratio:16/10;border:1px dashed var(--rand);border-radius:8px"></div>'}</figure>
-      <figure><figcaption>Entwurf</figcaption>${z.nachherBild ? `<img src="${z.nachherBild}" alt="">` : '<div style="aspect-ratio:16/10;border:1px dashed var(--rand);border-radius:8px"></div>'}</figure>
+      <figure><figcaption>Heute · mobil</figcaption>${z.vorherBild ? `<img src="${z.vorherBild}" alt="">` : '<div style="aspect-ratio:9/16;border:1px dashed var(--rand);border-radius:8px"></div>'}</figure>
+      <figure><figcaption>Entwurf · mobil</figcaption>${z.nachherBild ? `<img src="${z.nachherBild}" alt="">` : '<div style="aspect-ratio:9/16;border:1px dashed var(--rand);border-radius:8px"></div>'}</figure>
     </div>` : ''}
 
     ${z.luecken.length ? `<ul class="luecken">
       ${z.luecken.map((l) => `<li><strong>${esc(l.text)}</strong> ${esc(l.warum)}</li>`).join('\n      ')}
     </ul>` : ''}
 
+    ${z.streetview ? '<div class="info">Hero-Bild ist die Street-View-Fassade des Betriebs — echt, aber pruefen ob die Aufnahme aktuell genug ist.</div>' : ''}
     ${z.platzhalter ? '<div class="warn">Kein brauchbares Foto gefunden — im Hero steht ein Platzhalter. Vor dem Versand pruefen.</div>' : ''}
     ${z.fehler.length ? `<div class="fehler">${z.fehler.map(esc).join('<br>')}</div>` : ''}
 
