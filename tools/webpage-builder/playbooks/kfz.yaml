@@ -1,0 +1,65 @@
+# KFZ-Werkstatt / Garage / Autoservice
+#
+# Verkaufslogik: Vertrauen und Erreichbarkeit schlagen Design. Wer eine Werkstatt
+# sucht, hat ein Problem und will wissen: koennt ihr das, was kostet es ungefaehr,
+# wann habt ihr Zeit. Genau in dieser Reihenfolge ist die Seite aufgebaut.
+
+id: kfz
+label: KFZ-Werkstatt
+schema_type: AutoRepair
+theme: sharp
+
+match:
+  places_types: [car_repair, car_dealer, auto_parts_store, car_wash, tire_shop]
+  keywords: [werkstatt, garage, autoservice, autogarage, pneu, reifen, mfk, occasion,
+             karosserie, spengler, autohaus, fahrzeug, mechaniker, klimaservice, klimaanlage,
+             motorfahrzeug, bremse, motor, abgaswartung, einlagerung, radwechsel, oelwechsel,
+             autoreparatur, ersatzwagen, marken, service und wartung]
+  gewicht: 1.0
+
+sections:
+  - hero:      { variant: trust-bar, cta: offerte, zeige: [telefon, oeffnungszeiten] }
+  - services:  { layout: grid-3, titel: "Unsere Leistungen" }
+  - proof:     { source: google_reviews, min: 2, titel: "Was unsere Kunden sagen" }
+  - process:   { steps: 3, titel: "So einfach geht es" }
+  - about:     { titel: "Ihre Werkstatt vor Ort" }
+  - contact:   { map: true, hours: true, notfall: true }
+
+copy_brief:
+  tonalitaet: >
+    Sachlich, kompetent, bodenstaendig. Ein Werkstattkunde will keine Werbesprache,
+    sondern die Gewissheit, dass sein Auto in guten Haenden ist. Kurze Saetze.
+    Konkrete Leistungen statt Oberbegriffe.
+  headline_muster: "{leistung} in {ort} — {versprechen}"
+  beispiel_headline: "Ihre Garage in Gersau — Service, MFK und Reparaturen aus einer Hand"
+  verboten: [KI, innovativ, Loesungen, Synergie, ganzheitlich, Rundum-sorglos, massgeschneidert,
+             Ihr Partner fuer, hochmodern, revolutionaer]
+  leistungen_fallback:
+    - { titel: "Service & Wartung", text: "Regelmaessiger Service nach Herstellervorgaben — mit Garantieerhalt." }
+    - { titel: "MFK-Vorbereitung", text: "Wir pruefen Ihr Fahrzeug vor der Motorfahrzeugkontrolle und beheben Maengel." }
+    - { titel: "Reparaturen", text: "Von der Bremse bis zum Motor — Diagnose und Reparatur aller Marken." }
+    - { titel: "Pneuservice", text: "Wechsel, Einlagerung und Beratung zur passenden Bereifung." }
+    - { titel: "Klimaservice", text: "Pruefung, Desinfektion und Befuellung der Klimaanlage." }
+    - { titel: "Occasionen", text: "Geprueft, aufbereitet und mit Garantie uebergeben." }
+  prozess_fallback:
+    - { titel: "Anrufen oder Formular", text: "Sie schildern uns kurz, worum es geht." }
+    - { titel: "Termin und Kostenrahmen", text: "Sie erhalten einen Termin und wissen vorher, woran Sie sind." }
+    - { titel: "Erledigt", text: "Wir melden uns, sobald Ihr Fahrzeug bereitsteht." }
+
+cta:
+  primaer: { text: "Offerte anfordern", ziel: kontakt }
+  sekundaer: { text: "Anrufen", ziel: telefon }
+
+proof_priority: [google_rating, jahre_erfahrung, marken_zertifikat, anzahl_kunden]
+
+trust_signale:
+  - "Alle Marken"
+  - "Kostenvoranschlag vorab"
+  - "Termin meist innert Woche"
+
+images:
+  # Die Werkstatt von aussen sagt mehr als ein Katalogfoto.
+  streetview: bevorzugt
+  benoetigt: [werkstatt_aussen, arbeit_am_fahrzeug, team, hebebuehne]
+  stock_tags: ["auto repair garage workshop", "mechanic working on car", "car service switzerland"]
+  hero_bevorzugt: werkstatt_aussen

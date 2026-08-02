@@ -1,0 +1,61 @@
+# Restaurant / Gasthaus / Cafe / Bar
+#
+# Verkaufslogik: Gastro laeuft ueber Appetit und ueber die Frage "habt ihr heute
+# Abend noch einen Tisch". Bild zuerst, Reservierung immer erreichbar, Karte und
+# Oeffnungszeiten ohne Umweg. Der haeufigste Fehler bestehender Gastro-Seiten ist
+# eine Speisekarte als PDF — auf dem Handy unbrauchbar und fuer KI unsichtbar.
+
+id: gastro
+label: Restaurant / Gastronomie
+schema_type: Restaurant
+theme: warm
+
+match:
+  places_types: [restaurant, cafe, bar, bakery, meal_takeaway, meal_delivery,
+                 food, pizza_restaurant, italian_restaurant, night_club]
+  keywords: [restaurant, gasthaus, gasthof, beiz, cafe, kaffee, bar, pizzeria, trattoria,
+             baeckerei, konditorei, kueche, küche, menu, menü, speisekarte, mittagsmenu,
+             catering, hotel garni, wirtschaft, stube, taverne, gaeste, gäste, terrasse,
+             reservation, reservieren, tisch, gerichte, spezialitaeten, saal, ruhetag,
+             mittagessen, abendessen, apero, weinkarte]
+  gewicht: 1.0
+
+sections:
+  - hero:      { variant: bild-gross, cta: reservieren, zeige: [oeffnungszeiten, bewertung] }
+  - highlights: { layout: drei-spalten, titel: "Das erwartet Sie" }
+  - menu:      { titel: "Aus unserer Kueche", hinweis_pdf: true }
+  - proof:     { source: google_reviews, min: 2, titel: "Gaeste ueber uns" }
+  - about:     { titel: "Unser Haus" }
+  - contact:   { map: true, hours: true, reservierung: true }
+
+copy_brief:
+  tonalitaet: >
+    Einladend, sinnlich, konkret. Nicht "gehobene Kueche" sondern was tatsaechlich
+    auf den Teller kommt. Regionale Bezuege sind Gold: Produzenten, Seeblick,
+    Hausspezialitaet. Duzen nur, wenn der Betrieb es selbst tut.
+  headline_muster: "{eigenart} in {ort}"
+  beispiel_headline: "Frischer Fisch aus dem Vierwaldstaettersee — mitten in Gersau"
+  verboten: [kulinarische Reise, Gaumenfreuden, Genusserlebnis, Wohlfuehlatmosphaere,
+             mit Liebe zum Detail, Hauch von, verwoehnen lassen, Oase]
+  highlights_fallback:
+    - { titel: "Frisch gekocht", text: "Alles entsteht in unserer Kueche — ohne Fertigprodukte." }
+    - { titel: "Mittagsmenu", text: "Wechselndes Menu zum fairen Preis, werktags." }
+    - { titel: "Fuer Gruppen", text: "Familienfeiern und Firmenanlaesse auf Anfrage." }
+
+cta:
+  primaer: { text: "Tisch reservieren", ziel: kontakt }
+  sekundaer: { text: "Anrufen", ziel: telefon }
+
+proof_priority: [google_rating, gault_millau, jahre_bestehen, stammgaeste]
+
+trust_signale:
+  - "Frisch gekocht"
+  - "Regionale Produkte"
+  - "Reservation empfohlen"
+
+images:
+  # Teller und Innenraum verkaufen — die Hausfassade nur im Notfall.
+  streetview: fallback
+  benoetigt: [gericht, innenraum, aussenansicht, team]
+  stock_tags: ["swiss restaurant interior", "plated food fine dining", "restaurant terrace alps"]
+  hero_bevorzugt: gericht

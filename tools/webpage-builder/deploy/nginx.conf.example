@@ -1,0 +1,61 @@
+# Vorschau-Server fuer die Prototyp-Fabrik
+#
+# Nach /etc/nginx/sites-available/preview kopieren, anpassen, verlinken:
+#   ln -s /etc/nginx/sites-available/preview /etc/nginx/sites-enabled/
+#   nginx -t && systemctl reload nginx
+#
+# Zertifikat: certbot --nginx -d preview.simonruof.ch
+#
+# Die noindex-Kopfzeile ist keine Kosmetik. Sie ist die serverseitige Haelfte
+# der rechtlichen Absicherung — die andere Haelfte steht im HTML selbst.
+# Eine Vorschau, die bei Google auftaucht, waere ein echtes Problem.
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name preview.simonruof.ch;
+
+    root /var/www/preview;
+    index index.html;
+
+    ssl_certificate     /etc/letsencrypt/live/preview.simonruof.ch/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/preview.simonruof.ch/privkey.pem;
+
+    # ── Nicht indexieren, unter keinen Umstaenden ──────────────────────
+    add_header X-Robots-Tag "noindex, nofollow, noarchive, nosnippet, noimageindex" always;
+    add_header Referrer-Policy "no-referrer" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
+    # Zufalls-Slug ist der Zugriffsschutz: Verzeichnislisting muss aus sein,
+    # sonst waeren alle Vorschauen auf einen Blick sichtbar.
+    autoindex off;
+    location = / { return 404; }
+
+    location / {
+        try_files $uri $uri/ $uri/index.html =404;
+    }
+
+    # Bilder duerfen lange im Cache liegen, HTML nicht — sonst sieht der
+    # Empfaenger nach einer Korrektur noch die alte Fassung.
+    location ~* \.(webp|jpg|jpeg|png|svg|avif)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+        add_header X-Robots-Tag "noindex, noimageindex" always;
+    }
+    location ~* \.html$ {
+        expires -1;
+        add_header Cache-Control "no-store, must-revalidate";
+        add_header X-Robots-Tag "noindex, nofollow" always;
+    }
+
+    access_log /var/log/nginx/preview.access.log;
+    error_log  /var/log/nginx/preview.error.log;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name preview.simonruof.ch;
+    return 301 https://$host$request_uri;
+}

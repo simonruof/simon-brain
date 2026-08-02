@@ -1,0 +1,53 @@
+# Auffangnetz fuer alles, was keinem Branchen-Playbook zugeordnet werden konnte.
+#
+# Bewusst zurueckhaltend aufgebaut: Wenn wir die Branche nicht kennen, kennen wir
+# auch ihre Verkaufslogik nicht. Dann lieber ein sauberer, allgemeiner Auftritt
+# als falsche Annahmen.
+#
+# Taucht ein Betriebstyp mehrfach hier auf, ist das das Signal, ein eigenes
+# Playbook dafuer anzulegen. Die Datei kopieren und anpassen reicht.
+
+id: _default
+label: Allgemein
+schema_type: LocalBusiness
+theme: clean
+
+match:
+  places_types: []
+  keywords: []
+  gewicht: 0.0
+
+sections:
+  - hero:      { variant: trust-bar, cta: kontakt, zeige: [telefon, oeffnungszeiten] }
+  - services:  { layout: grid-3, titel: "Unser Angebot" }
+  - proof:     { source: google_reviews, min: 2, titel: "Kundenstimmen" }
+  - about:     { titel: "Ueber uns" }
+  - contact:   { map: true, hours: true }
+
+copy_brief:
+  tonalitaet: >
+    Sachlich, klar, ohne Werbefloskeln. Beschreibe genau das, was der Betrieb
+    laut seiner bestehenden Seite und seinem Google-Profil tatsaechlich anbietet.
+    Nichts erfinden — bei unbekannter Branche ist Zurueckhaltung wichtiger als Wirkung.
+  headline_muster: "{leistung} in {ort}"
+  verboten: [Ihr Partner fuer, ganzheitlich, Loesungen, innovativ, Synergie,
+             massgeschneidert, Rundum-sorglos, Kompetenz die ueberzeugt]
+  leistungen_fallback:
+    - { titel: "Beratung", text: "Wir nehmen uns Zeit fuer Ihr Anliegen." }
+    - { titel: "Ausfuehrung", text: "Sorgfaeltige Arbeit zum vereinbarten Termin." }
+    - { titel: "Betreuung", text: "Auch nach dem Auftrag erreichbar." }
+
+cta:
+  primaer: { text: "Kontakt aufnehmen", ziel: kontakt }
+  sekundaer: { text: "Anrufen", ziel: telefon }
+
+proof_priority: [google_rating, jahre_erfahrung]
+
+trust_signale: []
+
+images:
+  # Bei unbekannter Branche ist die echte Fassade besser als ein Platzhalter.
+  streetview: fallback
+  benoetigt: [aussenansicht, innenraum, team]
+  stock_tags: ["small business switzerland", "local shop storefront"]
+  hero_bevorzugt: aussenansicht

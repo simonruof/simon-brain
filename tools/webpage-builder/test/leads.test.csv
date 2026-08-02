@@ -1,0 +1,7 @@
+name,url,ort,telefon
+Garage Bruderer,http://127.0.0.1:8099/kfz/,Gersau,041 828 14 22
+Restaurant Seeblick,http://127.0.0.1:8099/gastro/,Gersau,
+Meier Sanitaer AG,http://127.0.0.1:8099/handwerk/,Brunnen,
+Coiffeur Studio Nadia,http://127.0.0.1:8099/beauty/,Vitznau,
+Kaputte Firma AG,http://127.0.0.1:8099/gibtesnicht/,Nirgendwo,
+Nicht Erreichbar GmbH,http://127.0.0.1:9999/tot/,Nirgendwo,

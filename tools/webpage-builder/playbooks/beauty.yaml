@@ -1,0 +1,67 @@
+# Coiffeur, Kosmetik, Nagelstudio, Massage, Physiotherapie
+#
+# Verkaufslogik: Hier entscheidet die Terminbuchung ueber alles. Sehr viele
+# dieser Betriebe haben ausschliesslich ein Instagram-Profil und nehmen Termine
+# per WhatsApp entgegen — das funktioniert, bis die Inhaberin im Urlaub ist.
+# Der Verkaufshebel ist deshalb nicht "schoenere Seite", sondern "Termine
+# kommen rein, waehrend Sie am Kunden arbeiten".
+
+id: beauty
+label: Beauty & Wellness
+schema_type: BeautySalon
+theme: warm
+
+match:
+  places_types: [hair_care, beauty_salon, spa, nail_salon, massage, physiotherapist,
+                 hair_salon, barber_shop, wellness_center]
+  # Eng gefasste Listen versagen genau dort, wo die Seite duenn ist. Ein
+  # Coiffeur-Auftritt mit vier Saetzen enthaelt "Coiffeur" und sonst nur
+  # Alltagswoerter — "Salon", "Haare", "Schnitt", "Farbe". Genau die muessen
+  # mitzaehlen, sonst landet der Betrieb im Auffangnetz.
+  keywords: [coiffeur, coiffure, friseur, frisör, haarstudio, hairstudio, barber, salon,
+             haare, haarschnitt, schnitt, straehnen, strähnen, balayage, coloration, farbe,
+             kosmetik, kosmetikstudio, gesichtsbehandlung, nagelstudio, nails, maniküre,
+             maniküre, pediküre, massage, wellness, spa, physiotherapie, podologie,
+             wimpern, permanent make up, beauty, hairstyling, styling, fusspflege,
+             damen und herren, terminvereinbarung]
+  gewicht: 1.0
+
+sections:
+  - hero:      { variant: bild-gross, cta: termin, zeige: [oeffnungszeiten, bewertung] }
+  - services:  { layout: preisliste, titel: "Behandlungen & Preise" }
+  - proof:     { source: google_reviews, min: 2, titel: "Was Kundinnen sagen" }
+  - about:     { titel: "Ueber uns" }
+  - gallery:   { titel: "Einblicke", optional: true }
+  - contact:   { map: true, hours: true, termin: true }
+
+copy_brief:
+  tonalitaet: >
+    Warm, persoenlich, ohne Kitsch. Die Kundin will wissen, ob sie sich hier wohl
+    fuehlt und was es kostet. Preise nennen, wenn irgend moeglich — verschwiegene
+    Preise kosten Termine. Persoenliche Ansprache, aber nicht anbiedernd.
+  headline_muster: "{leistung} in {ort}"
+  beispiel_headline: "Coiffeur in Gersau — Zeit fuer Ihre Haare, ohne Hektik"
+  verboten: [verwoehnen lassen, Wohlfuehloase, Auszeit vom Alltag, Wellness-Erlebnis,
+             Beauty-Experience, Ihre Schoenheit, strahlend schoen, Verwoehnprogramm]
+  leistungen_fallback:
+    - { titel: "Schneiden & Styling", text: "Beratung, Schnitt und Finish — abgestimmt auf Haar und Alltag." }
+    - { titel: "Farbe", text: "Von der Ansatzfarbe bis zu Straehnen und Balayage." }
+    - { titel: "Pflege", text: "Behandlungen fuer strapaziertes Haar und empfindliche Kopfhaut." }
+
+cta:
+  primaer: { text: "Termin vereinbaren", ziel: kontakt }
+  sekundaer: { text: "Anrufen", ziel: telefon }
+
+proof_priority: [google_rating, jahre_erfahrung, stammkundinnen, ausbildung]
+
+trust_signale:
+  - "Termine auch am Samstag"
+  - "Beratung inklusive"
+  - "Preise transparent"
+
+images:
+  # Der Salon von innen wirkt, die Strassenansicht selten.
+  streetview: fallback
+  benoetigt: [salon_innen, arbeit_am_kunden, ergebnis, team]
+  stock_tags: ["hair salon interior modern", "beauty treatment closeup", "barber shop scandinavian"]
+  hero_bevorzugt: salon_innen
