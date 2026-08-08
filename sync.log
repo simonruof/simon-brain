@@ -1393,3 +1393,21 @@ Letzter Commit: vor 2 Sekunden — 🔄 Brain Sync — 2026-08-07 20:00
 ==================================
 
 📝 Änderungen gefunden — committe...
+[main b60871a] 🔄 Brain Sync — 2026-08-08 08:00
+ 1 file changed, 14 insertions(+)
+⬆️  Push zu Remote...
+ssh: Could not resolve hostname github.com: Name or service not known
+fatal: Konnte nicht vom Remote-Repository lesen.
+
+Bitte stellen Sie sicher, dass die korrekten Zugriffsberechtigungen bestehen
+und das Repository existiert.
+
+🧠 Simon Brain Sync — 2026-08-08 20:00
+==================================
+
+⬇️  Pull von Remote...
+ℹ️  Lokale Änderungen vorhanden — nur Push
+
+📝 Lokale Änderungen:
+ M sync.log
+
