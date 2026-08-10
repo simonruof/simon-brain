@@ -1,0 +1,19 @@
+{
+  "name": "slot-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Terminslot-Engine für einen Friseurbetrieb in Baden-Württemberg — Einwirkzeit-fähig, transaktionssicher",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "migrate": "node bin/migrate.js",
+    "seed": "node bin/seed.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "luxon": "^3.7.2"
+  }
+}
