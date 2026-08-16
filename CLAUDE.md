@@ -36,6 +36,7 @@ Simon Ruof (42), wohnhaft in **Gersau, Kanton Schwyz**, Schweiz. Deutschen Pass.
 | 8 | [[08_Karriere/Karriere]] | Passiv | Roche Job halten, Exit vorbereiten |
 | 9 | [[09_Fitness/Fitness]] | Aktiv | 8-Wochen Fatcut, PITT-Force |
 | 10 | [[10_TRW_Business/README]] | Aufbau | The Real World Kurse → eigene Business-Intelligenz + Content |
+| 11 | [[11_Agency_System/README]] | Aufbau | 7-Agent Lead-Pipeline, Website-Verkauf an KMU |
 
 ---
 

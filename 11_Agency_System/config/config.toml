@@ -1,0 +1,89 @@
+# ── Agency System — zentrale Konfiguration ───────────────────────────────
+# Alle Zahlen hier sind Stellschrauben. Kein Agent hardcodet Werte.
+# Format: TOML (Python 3.11 tomllib, keine Dependencies noetig).
+
+[business]
+operator          = "Simon Ruof"
+firma             = "ai-central.ch"
+absender_adresse  = "Simon Ruof, 6442 Gersau, Schweiz"   # UWG: Absender muss identifizierbar sein
+kontakt_email     = "simon.ruof@gmail.com"
+waehrung          = "CHF"
+
+# Angebotsleiter. Bewusst an die bestehende ai-central.ch Leiter angelehnt,
+# statt die USD-Preise aus dem Original-Playbook zu uebernehmen.
+paket_basis       = 1490      # Landingpage / Website, einmalig
+paket_plus        = 2900      # Website + Setup Google Business + Formulare
+retainer_monat    = 490       # Betreuung ab Monat 2
+
+[scope]
+# Start bewusst eng: eine Region, eine Nische. Erst skalieren, wenn die
+# Antwortrate ueber 3 Wochen stabil ueber dem Alarm-Wert liegt.
+staedte           = ["Schwyz", "Luzern", "Zug"]
+aktive_staedte    = ["Schwyz"]                      # Phase 1: nur diese
+nischen           = ["Sanitaer", "Dachdecker", "Elektriker", "Maler", "Gartenbau", "Zahnarzt", "Coiffeur"]
+aktive_nischen    = ["Sanitaer"]                    # Phase 1: nur diese
+sprache           = "de-CH"
+
+[scout]
+# Qualifikationskriterien aus dem Playbook, auf CH-Verhaeltnisse justiert.
+scan_ziel_pro_tag         = 220     # gescannte Betriebe
+lead_ziel_pro_tag         = 30      # qualifizierte Leads
+min_jahre_auf_maps        = 5
+max_bewertungen           = 50
+min_sterne                = 4.0
+website_veraltet_ab_jahr  = 2016    # Site aelter als das = "veraltet"
+min_score                 = 60      # unter diesem Score kein Lead
+
+[scoring]
+# Gewichte fuer den Qualifikations-Score (0-100).
+gew_keine_website         = 35
+gew_veraltete_website     = 25
+gew_kein_mobile           = 15
+gew_hohe_bewertung        = 20
+gew_wenig_bewertungen     = 15
+gew_etabliert             = 15
+
+[builder]
+# Mockups kosten Zeit und API-Budget -> nur fuer die schaerfsten Leads.
+mockups_pro_tag           = 5
+video_laenge_sek          = 10
+video_aufloesung          = "1080x1920"
+screenshots_pro_mockup    = 5
+
+[pitcher]
+nachrichten_pro_tag       = 30
+max_woerter_nachricht     = 70
+diagnose_woerter          = 50
+# Kanal pro Nische. E-Mail ist in der CH der rechtlich sauberste B2B-Kanal.
+kanal_default             = "email"
+follow_ups_max            = 2
+follow_up_abstand_tage    = 4
+sendefenster_start        = "08:00"   # lokale Zeit, keine Nacht-/Sonntagsmails
+sendefenster_ende         = "17:30"
+sendetage                 = ["Mo", "Di", "Mi", "Do", "Fr"]
+
+[checker]
+# Harte Qualitaets-Gates. Faellt eine Nachricht durch, wird sie NICHT gesendet,
+# sondern geht zurueck an den Diagnoser.
+min_personalisierung      = 2       # konkrete, lead-spezifische Fakten in der Nachricht
+verbotene_phrasen_datei   = "config/blocklist.txt"
+max_ausrufezeichen        = 1
+verbiete_ki_erwaehnung    = true    # Simons Regel: nie "KI" im Erstkontakt
+
+[thresholds]
+# Wann der Mensch geweckt wird.
+eskalation_deal_chf       = 3000    # Deal groesser -> Simon entscheidet
+alarm_antwortrate_pct     = 12.0    # Tages-Antwortrate darunter -> Alarm
+ziel_antwortrate_pct      = 14.0
+min_stichprobe_antwortrate = 20     # unter so vielen Sends kein Alarm (Rauschen)
+kosten_alarm_chf_monat    = 500
+
+[compliance]
+# Siehe COMPLIANCE.md. Diese Schalter sind kein Deko-Element —
+# die Pipeline bricht ab, wenn sie verletzt werden.
+opt_out_pflicht           = true
+impressum_pflicht         = true
+suppression_datei         = "state/suppression.txt"
+max_kontakte_pro_betrieb  = 3       # inkl. Follow-ups, dann Ruhe
+respektiere_robots        = true
+keine_privatpersonen      = true    # nur Geschaeftsadressen (B2B)
