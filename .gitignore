@@ -8,3 +8,12 @@
 .DS_Store
 Thumbs.db
 *.tmp
+
+# Agency System — Kontaktdaten Dritter gehoeren nicht ins Repo (DSG)
+11_Agency_System/leads/
+11_Agency_System/state/
+11_Agency_System/assets/
+11_Agency_System/berichte/
+11_Agency_System/logs/
+__pycache__/
+*.pyc
