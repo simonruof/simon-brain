@@ -1,0 +1,60 @@
+# Phrasen, die eine Nachricht sofort durchfallen lassen (Checker-Agent).
+# Eine Phrase pro Zeile, Kommentare mit #. Matching ist case-insensitive
+# und ignoriert Umlaut-Schreibweise (ae/ä).
+#
+# --- Kategorie: KI-Marker / Modell-Sprech ---
+als KI
+als AI
+als Sprachmodell
+ich hoffe, diese Nachricht erreicht Sie
+ich hoffe, es geht Ihnen gut
+ich hoffe, diese E-Mail findet Sie
+in der heutigen schnelllebigen
+in der heutigen digitalen Welt
+es ist wichtig zu beachten
+lassen Sie uns gemeinsam
+tauchen wir ein
+revolutionieren
+game changer
+nahtlos
+mühelos
+muehelos
+im digitalen Zeitalter
+Ihr Partner für den Erfolg
+Ihr Partner fuer den Erfolg
+
+# --- Kategorie: Buzzword-Bingo ---
+Synergien
+ganzheitliche Lösung
+ganzheitliche Loesung
+maßgeschneiderte Lösung
+massgeschneiderte Loesung
+innovative Lösung
+innovative Loesung
+State of the Art
+Best Practice
+Mehrwert generieren
+Potenzial ausschöpfen
+Potenzial ausschoepfen
+disruptiv
+skalierbar
+
+# --- Kategorie: Spam-Trigger / Filterrisiko ---
+100% garantiert
+kostenlos und unverbindlich testen
+kein Risiko
+letzte Chance
+nur heute
+exklusives Angebot
+Klicken Sie hier
+Sofort mehr Umsatz
+Verdoppeln Sie Ihren Umsatz
+Geld zurück Garantie
+Geld zurueck Garantie
+
+# --- Kategorie: Falsche Vertrautheit / Anbiederung ---
+Lieber Freund
+Hallo Chef
+Wie geht es der Familie
+Ich habe Sie bewundert
+Ich bin ein grosser Fan
