@@ -1,0 +1,81 @@
+# Domain-Kandidaten AI Unternehmen — eine Domain pro Zeile, # = Kommentar
+# Bindestrich-Varianten werden vom Skript automatisch auch zusammengeschrieben geprueft.
+
+## A) Zeit & Entlastung (KMU-Outreach ohne "KI" — passt zum Prinzip "ROI + Zeitersparnis")
+mehr-zeit.ch
+zeit-sparen.ch
+stunden-sparen.ch
+weniger-buero.ch
+weniger-admin.ch
+weniger-papierkram.ch
+nie-mehr-papierkram.ch
+mehr-feierabend.ch
+frueher-feierabend.ch
+mehr-freizeit.ch
+produktiver-arbeiten.ch
+effizienter-arbeiten.ch
+mehr-produktivitaet.ch
+kmu-effizienz.ch
+kmu-entlastung.ch
+buero-entlastung.ch
+
+## B) Handwerker / Trades AI Tool (Offerten, Anrufe, Termine)
+schneller-offerieren.ch
+offerte-sofort.ch
+offerten-automat.ch
+automatisch-offerieren.ch
+handwerker-offerten.ch
+handwerker-assistent.ch
+handwerker-buero.ch
+handwerk-plus.ch
+kein-anruf-verpasst.ch
+nie-mehr-verpasst.ch
+anruf-assistent.ch
+telefon-assistent.ch
+termin-assistent.ch
+buero-assistent.ch
+digitaler-assistent.ch
+digitaler-mitarbeiter.ch
+
+## C) Mehr-Ergebnis-Serie (Erweiterung mehr-kunden.ch)
+mehr-umsatz.ch
+mehr-gewinn.ch
+mehr-marge.ch
+mehr-projekte.ch
+mehr-buchungen.ch
+mehr-reservationen.ch
+mehr-bewertungen.ch
+mehr-empfehlungen.ch
+mehr-stammkunden.ch
+mehr-rueckrufe.ch
+mehr-bewerbungen.ch
+mehr-sichtbarkeit.ch
+mehr-mandate.ch
+mehr-klienten.ch
+mehr-patienten.ch
+
+## D) KI explizit (fuer Kurse / ki-einfuehrung.ch / ai-central.ch Funnel)
+ki-fuer-kmu.ch
+kmu-ki.ch
+ki-kurs.ch
+ki-kurse.ch
+ki-schulung.ch
+ki-training.ch
+ki-start.ch
+ki-check.ch
+ki-potenzialcheck.ch
+ki-pilot.ch
+ki-partner.ch
+ki-agenten.ch
+ki-mitarbeiter.ch
+ki-automatisierung.ch
+kmu-automatisierung.ch
+ki-im-betrieb.ch
+ki-einfach.ch
+einfach-ki.ch
+ai-agenten.ch
+agentic-ai.ch
+
+## E) Nachpruefen aus letzter Liste (Simons Vorschlaege)
+mehr-kunden.ch
+mehr-neukunden.ch
